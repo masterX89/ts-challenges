@@ -69,4 +69,26 @@ type EndsWithStr<
 type EndsWithStrRes = EndsWithStr<'string suffix', 'suffix'>
 type EndsWithStrRes1 = EndsWithStr<'string', 'suffix'>
 // 2. Replace
+type ReplaceStr<
+  Str extends string,
+  From extends string,
+  To extends string
+> = Str extends `${infer Prefix}${From}${infer Suffix}`
+  ? `${Prefix}${To}${Suffix}`
+  : Str
+type ReplaceStrRes = ReplaceStr<'I will say ? is better than JS', '?', 'TS'>
 // 3. Trim | TrimLeft | TrimRight
+type TrimRightStr<Str extends string> = Str extends `${infer Rest}${
+  | ' '
+  | '\n'
+  | '\t'}`
+  ? TrimRightStr<Rest>
+  : Str
+type TrimLeftStr<Str extends string> = Str extends `${
+  | ' '
+  | '\n'
+  | '\t'}${infer Rest}`
+  ? TrimLeftStr<Rest>
+  : Str
+type TrimStr<Str extends string> = TrimLeftStr<TrimRightStr<Str>>
+type TrimStrRes = TrimStr<'   hello     '>
