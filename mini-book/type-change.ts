@@ -68,10 +68,80 @@ type AppendArgumentRes = AppendArgument<
 // Index Type
 
 // Mapping
-// UppercaseKey
+type Mapping<T extends object> = {
+  [K in keyof T as `${K & (string | number)}${K & (string | number)}`]: [
+    T[K],
+    T[K],
+    T[K]
+  ]
+}
+type MappingRes = Mapping<{
+  a: 1
+  b: 2
+  1: 3
+}>
+// UppercaseKey 使用 as
+type UppercaseKey<Obj extends object> = {
+  [Key in keyof Obj as Uppercase<Key & string>]: [Obj[Key], Obj[Key], Obj[Key]]
+}
+type UppercaseKeyRes = UppercaseKey<{
+  aaaa: 1
+  bbbb: 2
+}>
+// 拓展 只把首字母大写
+type CapitalizeStrInIndex<Str extends string> =
+  Str extends `${infer FirstCase}${infer Rest}`
+    ? `${Uppercase<FirstCase>}${Rest}`
+    : Str
+type UppercaseKeyIndex<T extends object> = {
+  [K in keyof T as CapitalizeStrInIndex<K & string>]: [T[K], T[K], T[K]]
+}
+type UppercaseKeyIndexRes = UppercaseKeyIndex<{
+  aaaa: 1
+  bbbb: 2
+}>
 // Record
+// type Record<K extends string | number | symbol, T> = { [P in K]: T; }
+// 使用 Record 可以约束 Key 的类型
+type UppercaseKeyRecord<Obj extends Record<string | symbol, any>> = {
+  [Key in keyof Obj as Uppercase<Key & string>]: Obj[Key]
+}
+const sym = Symbol('sym')
+// type UppercaseKeyRecordRes = { AAAA: 1; BBBB: 2 }
+type UppercaseKeyRecordRes = UppercaseKeyRecord<{
+  aaaa: 1
+  bbbb: 2
+  [sym]: 3
+}>
+// TODO: 以下的映射都是全部映射，在实战部分需要解决只对几个属性修改
 // ToReadonly
+type ToReadonly<T> = {
+  readonly [Key in keyof T]: T[Key]
+}
+type ReadOnlyRes = ToReadonly<{ name: string; age: number }>
 // ToPartial
+type ToPartial<T> = {
+  [Key in keyof T]?: T[Key]
+}
+type PartialRes = ToPartial<{ name: string; age: number }>
 // ToMutable
+type ToMutable<T> = {
+  -readonly [Key in keyof T]: T[Key]
+}
+type MutableRes = ToMutable<{ readonly name: string; age: number }>
 // ToRequired
+type ToRequired<T> = {
+  [Key in keyof T]-?: T[Key]
+}
+type RequiredRes = ToRequired<{ name?: string; age?: number }>
 // FilterByValueType
+type FilterByValueType<Obj extends Record<string, any>, ValueType> = {
+  [Key in keyof Obj as ValueType extends Obj[Key] ? Key : never]: Obj[Key]
+}
+
+interface Person {
+  name: string
+  age: number
+  hobby: string[]
+}
+type FilterByValueTypeRes = FilterByValueType<Person, string | number>
