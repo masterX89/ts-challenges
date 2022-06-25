@@ -55,3 +55,12 @@ type GreaterThanRes = GreaterThan<5, 4>
 type GreaterThanRes1 = GreaterThan<5, 5>
 type GreaterThanRes2 = GreaterThan<5, 7>
 // Fibonacci
+type Fibonacci<
+  Num extends number = 1,
+  Prev extends unknown[] = [1],
+  Curr extends unknown[] = [],
+  IndexArr extends unknown[] = []
+> = IndexArr['length'] extends Num
+  ? Curr['length']
+  : Fibonacci<Num, Curr, [...Prev, ...Curr], [...IndexArr, unknown]>
+type FRes = Fibonacci<8>
