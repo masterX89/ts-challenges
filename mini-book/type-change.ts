@@ -136,7 +136,7 @@ type ToRequired<T> = {
 type RequiredRes = ToRequired<{ name?: string; age?: number }>
 // FilterByValueType
 type FilterByValueType<Obj extends Record<string, any>, ValueType> = {
-  [Key in keyof Obj as ValueType extends Obj[Key] ? Key : never]: Obj[Key]
+  [Key in keyof Obj as Obj[Key] extends ValueType ? Key : never]: Obj[Key]
 }
 
 interface Person1 {
