@@ -67,3 +67,27 @@ type GetRequest<Obj extends Record<string, any>> = {
   [Key in keyof Obj as {} extends Pick<Obj, Key> ? never : Key]: Obj[Key]
 }
 type GetRequestRes = GetRequest<{ name: string; age?: number }>
+
+// RemoveIndexSignature
+// TODO: number 怎么办
+type RemoveIndexSignature<Obj extends Record<string, any>> = {
+  [Key in keyof Obj as Key extends `${infer Str}` ? Str : never]: Obj[Key]
+}
+type RemoveIndexSignatureRes = RemoveIndexSignature<{
+  [key: string]: any
+  a: number
+  1: string
+}>
+
+type RemoveIndexSignatureEnhance<Obj extends Record<string | number, any>> = {
+  [Key in keyof Obj as Key extends `${infer Str}`
+    ? Str
+    : Key extends number
+    ? Key
+    : never]: Obj[Key]
+}
+type RemoveIndexSignatureEnhanceRes = RemoveIndexSignatureEnhance<{
+  [key: string]: any
+  a: number
+  1: string
+}>
